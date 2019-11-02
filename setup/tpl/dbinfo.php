@@ -57,10 +57,9 @@ $sDisabled = ( $blMbStringOn > 1 && $blUnicodeSupport > 1 ) ? '' : 'disabled';
     </td>
   </tr>
   <tr>
-    <td><?php $this->getText('STEP_3_DB_DEMODATA'); ?>:</td>
+    <td></td>
     <td>
-        &nbsp;&nbsp;<input type="radio" name="aDB[dbiDemoData]" value="1" <?php if( $aDB['dbiDemoData'] == 1) echo( "checked"); ?>><?php $this->getText('BUTTON_RADIO_INSTALL_DB_DEMO'); ?><br>
-        &nbsp;&nbsp;<input type="radio" name="aDB[dbiDemoData]" value="0" <?php if( $aDB['dbiDemoData'] == 0) echo( "checked"); ?>><?php $this->getText('BUTTON_RADIO_NOT_INSTALL_DB_DEMO'); ?><br>
+        <input type="hidden" name="aDB[dbiDemoData]" value="0">
     </td>
   </tr>
   <tr>

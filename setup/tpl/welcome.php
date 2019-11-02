@@ -30,10 +30,7 @@ require "_header.php"; ?>
             <table cellpadding="0" cellspacing="0" border="0" height="29">
               <tr>
                 <td style="padding-right: 3px;">
-                    <select name="location_lang" style="font-size: 11px;"
-                onChange="update_dynpages_checkbox();"
-                    >
-                        <option value=""><?php $this->getText('SELECT_PLEASE_CHOOSE'); ?></option>
+                    <select name="location_lang" style="font-size: 11px;" onChange="update_dynpages_checkbox();">
                         <?php
                         $aLocations   = $this->getViewParam( "aLocations" );
                         $sSetupLang   = $this->getViewParam( "sSetupLang" );

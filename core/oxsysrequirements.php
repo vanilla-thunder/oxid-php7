@@ -258,7 +258,7 @@ class oxSysRequirements
 
 
             if ($this->isAdmin()) {
-                $aRequiredServerConfigs[] = 'mysql_version';
+                $aRequiredServerConfigs[] = 'mysqli_version';
             }
             $this->_aRequiredModules = array_fill_keys($aRequiredPHPExtensions, 'php_extennsions') +
                                        array_fill_keys($aRequiredPHPConfigs, 'php_config') +
@@ -326,6 +326,7 @@ class oxSysRequirements
 
         clearstatcache();
         $sPath = $sPath ? $sPath : getShopBasePath();
+        $iModStat = 2;
 
         // special config file check
         $sFullPath = $sPath . "config.inc.php";
@@ -333,7 +334,8 @@ class oxSysRequirements
             ($this->isAdmin() && is_writable($sFullPath)) ||
             (!$this->isAdmin() && !is_writable($sFullPath))
         ) {
-            return 0;
+            print "<br/><b style='color:red;display:block;text-align:center;'>bad file permissions: ".$sFullPath."</b>";
+            $iModStat = 0;
         }
 
         $sTmp = "$sPath/tmp{$sVerPrefix}/";
@@ -353,13 +355,14 @@ class oxSysRequirements
             $sPath . "log/",
             $sTmp
         );
-        $iModStat = 2;
+
         $sPathToCheck = reset($aPathsToCheck);
         while ($sPathToCheck) {
             // missing file/folder?
             if (!file_exists($sPathToCheck)) {
+                print "<br/><b style='color:red;display:block;text-align:center;'>directory missing: ".$sPathToCheck."</b>";
                 $iModStat = 0;
-                break;
+                //break;
             }
 
             if (is_dir($sPathToCheck)) {
@@ -375,8 +378,9 @@ class oxSysRequirements
             // testing if file permissions >= $iMinPerm
             //if ( ( (int) substr( decoct( fileperms( $sFullPath ) ), 2 ) ) < $iMinPerm ) {
             if (!is_readable($sPathToCheck) || !is_writable($sPathToCheck)) {
+                print "<br/><b style='color:red;display:block;text-align:center;'>directory is not writable: ".$sPathToCheck."</b>";
                 $iModStat = 0;
-                break;
+                //break;
             }
 
             $sPathToCheck = next($aPathsToCheck);
@@ -737,7 +741,7 @@ class oxSysRequirements
 
         // client version must be >=5
         if ($iModStat) {
-            $sClientVersion = mysql_get_client_info();
+            $sClientVersion = mysqli_get_client_info();
             if (version_compare($sClientVersion, '5', '<')) {
                 $iModStat = 1;
                 if (version_compare($sClientVersion, '4', '<')) {

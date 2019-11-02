@@ -832,9 +832,9 @@ class OxSetupDb extends oxSetupCore
      */
     public function execSql($sQ)
     {
-        $rReturn = mysql_query($sQ, $this->getConnection());
+        $rReturn = mysqli_query( $this->getConnection(),$sQ);
         if ($rReturn === false) {
-            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_BAD_SQL') . "( $sQ ): " . mysql_error($this->getConnection()) . "\n");
+            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_BAD_SQL') . "( $sQ ): " . mysqli_error($this->getConnection()) . "\n");
         }
 
         return $rReturn;
@@ -849,23 +849,23 @@ class OxSetupDb extends oxSetupCore
     {
         // testing creation
         $sQ = "create or replace view oxviewtest as select 1";
-        $rReturn = mysql_query($sQ, $this->getConnection());
+        $rReturn = mysqli_query( $this->getConnection(),$sQ);
         if ($rReturn === false) {
-            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_VIEWS_CANT_CREATE') . " " . mysql_error($this->getConnection()) . "\n");
+            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_VIEWS_CANT_CREATE') . " " . mysqli_error($this->getConnection()) . "\n");
         }
 
         // testing data selection
         $sQ = "select * from oxviewtest";
-        $rReturn = mysql_query($sQ, $this->getConnection());
+        $rReturn = mysqli_query( $this->getConnection(),$sQ);
         if ($rReturn === false) {
-            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_VIEWS_CANT_SELECT') . " " . mysql_error($this->getConnection()) . "\n");
+            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_VIEWS_CANT_SELECT') . " " . mysqli_error($this->getConnection()) . "\n");
         }
 
         // testing view dropping
         $sQ = "drop view oxviewtest";
-        $rReturn = mysql_query($sQ, $this->getConnection());
+        $rReturn = mysqli_query( $this->getConnection(),$sQ);
         if ($rReturn === false) {
-            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_VIEWS_CANT_DROP') . " " . mysql_error($this->getConnection()) . "\n");
+            throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_VIEWS_CANT_DROP') . " " . mysqli_error($this->getConnection()) . "\n");
         }
     }
 
@@ -906,7 +906,7 @@ class OxSetupDb extends oxSetupCore
     public function getDatabaseVersion()
     {
         $rRecords = $this->execSql("SHOW VARIABLES LIKE 'version'");
-        $aRow = mysql_fetch_row($rRecords);
+        $aRow = mysqli_fetch_row($rRecords);
 
         return $aRow[1];
     }
@@ -939,11 +939,11 @@ class OxSetupDb extends oxSetupCore
         $aParams = (is_array($aParams) && count($aParams)) ? $aParams : $this->getInstance("oxSetupSession")->getSessionParam('aDB');
         if ($this->_oConn === null) {
             // ok open DB
-            $this->_oConn = @mysql_connect($aParams['dbHost'], $aParams['dbUser'], $aParams['dbPwd']);
+            $this->_oConn = @mysqli_connect($aParams['dbHost'], $aParams['dbUser'], $aParams['dbPwd']);
             if (!$this->_oConn) {
                 $oSetup = $this->getInstance("oxSetup");
                 $oSetup->setNextStep($oSetup->getStep('STEP_DB_INFO'));
-                throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_DB_CONNECT') . " - " . mysql_error(), oxSetupDb::ERROR_DB_CONNECT);
+                throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_DB_CONNECT') . " - " . mysqli_error($this->_oConn), oxSetupDb::ERROR_DB_CONNECT);
             }
 
             // testing version
@@ -951,8 +951,8 @@ class OxSetupDb extends oxSetupCore
             if (!$oSysReq->checkMysqlVersion($this->getDatabaseVersion())) {
                 throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS'), oxSetupDb::ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS);
             }
-            if (!(@mysql_select_db($aParams['dbName'], $this->_oConn))) {
-                throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_COULD_NOT_CREATE_DB') . " - " . mysql_error(), oxSetupDb::ERROR_COULD_NOT_CREATE_DB);
+            if (!(@mysqli_select_db( $this->_oConn,$aParams['dbName']))) {
+                throw new Exception($this->getInstance("oxSetupLang")->getText('ERROR_COULD_NOT_CREATE_DB') . " - " . mysqli_error($this->_oConn), oxSetupDb::ERROR_COULD_NOT_CREATE_DB);
             }
         }
 
@@ -972,7 +972,7 @@ class OxSetupDb extends oxSetupCore
             // no success !
             $oSetup = $this->getInstance("oxSetup");
             $oSetup->setNextStep($oSetup->getStep('STEP_DB_INFO'));
-            throw new Exception(sprintf($this->getInstance("oxSetupLang")->getText('ERROR_COULD_NOT_CREATE_DB'), $sDbName) . " - " . mysql_error());
+            throw new Exception(sprintf($this->getInstance("oxSetupLang")->getText('ERROR_COULD_NOT_CREATE_DB'), $sDbName) . " - " . mysqli_error($this->getConnection()));
         }
     }
 
@@ -1038,7 +1038,7 @@ class OxSetupDb extends oxSetupCore
         //set only one active language
         $aRes = $this->execSql("select oxvarname, oxvartype, DECODE( oxvarvalue, '" . $oConfk->sConfigKey . "') AS oxvarvalue from oxconfig where oxvarname='aLanguageParams'");
         if ($aRes) {
-            if ($aRow = mysql_fetch_assoc($aRes)) {
+            if ($aRow = mysqli_fetch_assoc($aRes)) {
                 if ($aRow['oxvartype'] == 'arr' || $aRow['oxvartype'] == 'aarr') {
                     $aRow['oxvarvalue'] = unserialize($aRow['oxvarvalue']);
                 }
@@ -1072,7 +1072,7 @@ class OxSetupDb extends oxSetupCore
 
         $aConverted = array();
 
-        while ($aRow = mysql_fetch_assoc($aRes)) {
+        while ($aRow = mysqli_fetch_assoc($aRes)) {
 
             if ($aRow['oxvartype'] == 'arr' || $aRow['oxvartype'] == 'aarr') {
                 $aRow['oxvarvalue'] = unserialize($aRow['oxvarvalue']);
@@ -1086,9 +1086,9 @@ class OxSetupDb extends oxSetupCore
         foreach ($aConverted as $sKey => $sValue) {
 
             if (is_array($sValue['oxvarvalue'])) {
-                $sVarValue = mysql_real_escape_string(serialize($sValue['oxvarvalue']), $oConn);
+                $sVarValue = mysqli_real_escape_string($oConn,serialize($sValue['oxvarvalue']));
             } else {
-                $sVarValue = is_string($sValue['oxvarvalue']) ? mysql_real_escape_string($sValue['oxvarvalue'], $oConn) : $sValue['oxvarvalue'];
+                $sVarValue = is_string($sValue['oxvarvalue']) ? mysqli_real_escape_string($oConn,$sValue['oxvarvalue']) : $sValue['oxvarvalue'];
             }
 
             $sSql = "UPDATE oxconfig SET oxvarvalue = ENCODE( '" . $sVarValue . "', '" . $oConfk->sConfigKey . "') WHERE oxvarname = '" . $sValue['oxvarname'] . "'; ";
@@ -1369,7 +1369,7 @@ class OxSetupUtils extends oxSetupCore
         $oLang = $this->getInstance("oxSetupLang");
         $oSetup = $this->getInstance("oxSetup");
 
-        if (!file_exists($sPath)) {
+        if (!file_exists($sPath) && !mkdir($sPath, 0775)) {
             $oSetup->setNextStep($oSetup->getStep('STEP_DIRS_INFO'));
             throw new Exception(sprintf($oLang->getText('ERROR_NOT_AVAILABLE'), $sPath));
         }
@@ -2208,7 +2208,7 @@ class oxSetupController extends oxSetupCore
         } catch (Exception $oExcp) {
             if ($oExcp->getCode() === oxSetupDb::ERROR_DB_CONNECT) {
                 $oSetup->setNextStep($oSetup->getStep('STEP_DB_INFO'));
-                $oView->setMessage($oLang->getText('ERROR_DB_CONNECT') . " - " . mysql_error());
+                $oView->setMessage($oLang->getText('ERROR_DB_CONNECT') . " - " . mysqli_error($this->getConnection()));
 
                 return "default.php";
             } elseif ($oExcp->getCode() === oxSetupDb::ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS) {
@@ -2304,22 +2304,13 @@ class oxSetupController extends oxSetupCore
             return "default.php";
         }
 
-        if ($aDB['dbiDemoData'] === '0') {
             try {
                 $oDb->queryFile("$sqlDir/initial_data.sql");
             } catch (Exception $oExcp) {
                 $oView->setMessage($oExcp->getMessage());
                 return "default.php";
             }
-        } else {
-            try {
-                $oDb->queryFile("$sqlDir/demodata.sql");
-            } catch (Exception $oExcp) {
-                // there where problems with queries
-                $oView->setMessage($oLang->getText('ERROR_BAD_DEMODATA') . "<br><br>" . $oExcp->getMessage());
-                return "default.php";
-            }
-        }
+
 
         //swap database to english
         if ($oSession->getSessionParam('location_lang') != "de") {
@@ -2646,12 +2637,9 @@ class oxSetupAps extends oxSetupCore
         // setupping db
         $oDb->queryFile("database_schema.sql");
 
-        // install demo data?
-        if ($blInstallDemoData) {
-            $oDb->queryFile("demodata.sql");
-        } else {
-            $oDb->queryFile("initial_data.sql");
-        }
+        // install initial data
+        $oDb->queryFile("initial_data.sql");
+
 
         //swap database to english
         if ($aParams["location_lang"] != "de") {

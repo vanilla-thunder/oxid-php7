@@ -1,3 +1,21 @@
+OXID 4.10.8 for PHP 7.3
+=============
+my changes to original code:
++ all demodata removed.
++ setup:
+  - FS permission checks improved
+  - encoding fixed
+  - demodata option rmeoved
+  - germany/german are now default region and language options
++ 3rd party payment modules removed
++ azure, flow, mobile theme removed
++ wave theme added
++ converted most german language files to UTF-8
+
+
+Original readme file goes here:
+=============
+
 Thank you for using the OXID eShop!
 
 This software is written in PHP + MySQL and runs platform independent on Apache webservers.

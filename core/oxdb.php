@@ -646,11 +646,11 @@ class oxDb
     public function escapeString($sString)
     {
         if ('mysql' == self::_getConfigParam("_dbType")) {
-            return mysql_real_escape_string($sString, $this->_getConnectionId());
+            return mysqli_real_escape_string($this->_getConnectionId(),$sString);
         } elseif ('mysqli' == self::_getConfigParam("_dbType")) {
             return mysqli_real_escape_string($this->_getConnectionId(), $sString);
         } else {
-            return mysql_real_escape_string($sString, $this->_getConnectionId());
+            return mysqli_real_escape_string($this->_getConnectionId(),$sString);
         }
     }
 }
