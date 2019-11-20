@@ -12,6 +12,9 @@ my changes to original code:
 + wave theme added
 + converted most german language files to UTF-8
 
+## Liste bekannter Module, die mit PHP 7.x funktionieren:
++ Amazon Pay & Login 4 OXID by BESTIT v3.3.0
++ PayPal Plus 2.0.5
 
 Original readme file goes here:
 =============
