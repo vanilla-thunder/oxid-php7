@@ -1,0 +1,53 @@
+.infogrid-view {
+  margin-bottom: 50px;
+
+  .boxwrapper & {
+    text-align: center;
+
+    @include media-breakpoint-up(md) {
+      text-align: left;
+    }
+  }
+
+  .title {
+    font-weight: 600;
+  }
+
+  .price {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    line-height: 1.4;
+
+    @include media-breakpoint-up(md){
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lead {
+      font-weight: 400;
+      @include media-breakpoint-up(md){
+        font-size: 1.3rem;
+      }
+    }
+  }
+
+  .picture {
+
+    .boxwrapper & {
+      border-bottom: 1px dashed $gray-300;
+      margin-bottom: $grid-gutter-width /2;
+
+      @include media-breakpoint-up(md){
+        max-width: 275px;
+        border-bottom: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    .img-fluid {
+      max-height: 205px;
+    }
+  }
+}
+

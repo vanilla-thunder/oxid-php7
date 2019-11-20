@@ -93,7 +93,7 @@ class oxExceptionHandler
      *
      * @return null
      */
-    public function handleUncaughtException(Exception $oEx)
+    public function handleUncaughtException($oEx)
     {
         // split between php or shop exception
         if (!$oEx instanceof oxException) {
@@ -146,7 +146,7 @@ class oxExceptionHandler
      *
      * @return null
      */
-    protected function _dealWithNoOxException(Exception $oEx)
+    protected function _dealWithNoOxException($oEx)
     {
         if (0 != $this->_iDebug) {
             $sLogMsg = date('Y-m-d H:i:s') . $oEx . "\n---------------------------------------------\n";

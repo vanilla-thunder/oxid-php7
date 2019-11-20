@@ -1,0 +1,10 @@
+.card {
+    height: 100%;
+
+    &-wrapper {
+        height: 100%;
+        display: block;
+        position: relative;
+        padding-bottom: 30px;
+    }
+}

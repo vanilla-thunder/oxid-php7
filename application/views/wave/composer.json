@@ -1,0 +1,32 @@
+{
+    "name": "oxid-esales/wave-theme",
+    "description": "This is Wave Theme for OXID eShop.",
+    "type": "oxideshop-theme",
+    "keywords": [
+        "oxid",
+        "themes",
+        "eShop"
+    ],
+    "homepage": "https://www.oxid-esales.com/en/home.html",
+    "license": [
+        "GPL-3.0-only"
+    ],
+    "minimum-stability": "dev",
+    "extra": {
+        "oxideshop": {
+            "target-directory": "wave",
+            "assets-directory": "out/wave",
+            "blacklist-filter": [
+                "build/**/*",
+                ".gitignore",
+                ".gitattributes",
+                "CHANGELOG.md",
+                "composer.json",
+                "CONTRIBUTING.md",
+                "Gruntfile.js",
+                "package.json",
+                "package-lock.json"
+            ]
+        }
+    }
+}
