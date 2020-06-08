@@ -793,6 +793,18 @@ class oxSysRequirements
     }
 
     /**
+     * mysql version check for oxid v4 mysqli adaption
+     *
+     * @param string $sVersion MySQL version
+     *
+     * @return int
+     */
+    public function checkMysqliVersion($sVersion = null)
+    {
+        return $this->checkMysqlVersion($sVersion);
+    }
+
+    /**
      * Checks if GDlib extension is loaded
      *
      * @return integer
